@@ -12,7 +12,7 @@ setuptools.setup(
     description="upload and download to anonfiless server",
     long_description=readme,
     long_description_content_type="text/markdown",
-    url="https://github.com/redevil1/anonfiless",
+    url="https://github.com/redevil1/anonfiles",
     install_requires=["tqdm"],
     python_requires=">=3",
     project_urls={

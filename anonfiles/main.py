@@ -2,15 +2,26 @@ import argparse
 import os
 from pathlib import Path
 from requests import get, post, ConnectionError, head
+import requests
 from requests.exceptions import MissingSchema
 import json
 import sys
-from tqdm import tqdm
+import tqdm
 from typing import List
+import requests_toolbelt
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 package_name = "anon"
 url = 'https://api.anonfiles.com/upload'
+
+class ProgressBar(tqdm.tqdm):
+    def update_to(self, n: int) -> None:
+        """Update the bar in the way compatible with requests-toolbelt.
+
+        This is identical to tqdm.update, except ``n`` will be the current
+        value - not the delta as tqdm expects.
+        """
+        self.update(n - self.n)  # will also do self.n = n
 
 def upload(filenames:List[str]):
     for filename in filenames:
@@ -26,11 +37,32 @@ def upload(filenames:List[str]):
 
         print("[UPLOADING]: ", filename)
 
-        try:
-            r = post(url, files=files)
-        except ConnectionError:
-            print("[Error]: No internet")
-            return 1
+        data_to_send = []
+        session = requests.session()
+
+        with open(filename, "rb") as fp:
+            data_to_send.append(
+                ("file", (filename, fp))
+            )
+            encoder = requests_toolbelt.MultipartEncoder(data_to_send)
+            with ProgressBar(
+                total=encoder.len,
+                unit="B",
+                unit_scale=True,
+                unit_divisor=1024,
+                miniters=1,
+                file=sys.stdout,
+            ) as bar:
+                monitor = requests_toolbelt.MultipartEncoderMonitor(
+                    encoder, lambda monitor: bar.update_to(monitor.bytes_read)
+                )
+
+                r = session.post(
+                    url,
+                    data=monitor,
+                    allow_redirects=False,
+                    headers={"Content-Type": monitor.content_type},
+                )
 
         resp = json.loads(r.text)
         if resp['status']:
@@ -80,7 +112,7 @@ def main(argv = None):
     subparsers = parser.add_subparsers(dest="command")
 
     upload_parser = subparsers.add_parser("up", help="upload files to https://anonfiles.com")
-    upload_parser.add_argument("filename", type=Path, nargs='+', help="one or more files to upload")
+    upload_parser.add_argument("filename", type=str, nargs='+', help="one or more files to upload")
 
     download_parser = subparsers.add_parser("d", help="download files ")
     download_parser.add_argument("filename", nargs='+', type=str, help="one or more URLs to download")
