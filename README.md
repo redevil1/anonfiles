@@ -23,10 +23,18 @@ anon d {url1} {url2} ...              # download file
 
 The anonfile-upload client is also usable through an API (for test integration, automation, etc)
 
-### anonfiles.main.upload([file_path])
+### anonfiles.upload([file1, file2])
 
 ```py
-from anonfiles.main import upload
+from anonfiles import upload
 
-upload([file_path])
+upload([file1, file2])
+```
+
+### anonfiles.download([file1, file2])
+
+```py
+from anonfiles import download
+
+download([file1, file2])
 ```
