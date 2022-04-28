@@ -13,7 +13,7 @@ setuptools.setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     url="https://github.com/redevil1/anonfiles",
-    install_requires=["tqdm"],
+    install_requires=["tqdm","requests","requests-toolbelt"],
     python_requires=">=3",
     project_urls={
         "Bug Tracker": "https://github.com/redevil1/anonfiless/issues",

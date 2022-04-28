@@ -10,7 +10,7 @@ import tqdm
 from typing import List
 import requests_toolbelt
 
-__version__ = "1.0.1"
+__version__ = "1.0.3"
 package_name = "anon"
 url = 'https://api.anonfiles.com/upload'
 
