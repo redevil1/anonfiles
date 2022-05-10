@@ -7,6 +7,11 @@ An upload script for anonfile.com made in python. Supports multiple files.
  ![Python 3.6](https://img.shields.io/badge/python-3.6-yellow.svg)
 
 
+## Features
+- Progress bar
+- upload urls will save in a file.
+
+
 ## Installation
 
 ```sh
