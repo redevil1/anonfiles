@@ -70,7 +70,7 @@ def upload(filenames:List[str]):
             urllong = resp['data']['file']['url']['full']
             print(f'[SUCCESS]: Your file has been succesfully uploaded:\nFull URL: {urllong}\nShort URL: {urlshort}')
             with open('urls.txt', 'a+') as f:
-                f.write(urllong)
+                f.write(urllong + '\n')
             print('url saved in urls.txt file')
         else:
             message = resp['error']['message']
